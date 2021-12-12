@@ -14,7 +14,10 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
 	  <div class="container-fluid">
 	    <a class="navbar-brand" href="#">Davinci.J</a>
-	    <a href="/form.html">회원 가입</a>
+		  <div>
+			  <a href="/form">회원 가입</a>
+			  <a href="/list">회원 목록</a>
+		  </div>
 	  </div>
 	</nav>
 	
@@ -23,18 +26,18 @@
 		<h1>회원 가입</h1>
 		<br/>
 
-		<form>
+		<form method="post" action="/create" >
 			<div class="form-group">
 			  <label for="userId">사용자 아이디</label>
-			  <input type="text" class="form-control" id="userId" placeholder="ex) 다빈치">
+			  <input type="text" class="form-control" id="userId" name="userId" placeholder="ex) 다빈치">
 			</div>
 			<div class="form-group">
 			  <label for="password">Password</label>
-			  <input type="password" class="form-control" id="password" placeholder="">
+			  <input type="password" class="form-control" id="password" name="password" placeholder="">
 			</div>
 			<div class="form-group">
 			  <label for="userName">이름</label>
-			  <input type="text" class="form-control" id="userName" placeholder="ex) 정호종">
+			  <input type="text" class="form-control" id="userName" name="userName" placeholder="ex) 정호종">
 			</div>
 		  <button type="submit" class="btn btn-primary">Sign in</button>
 		</form>
