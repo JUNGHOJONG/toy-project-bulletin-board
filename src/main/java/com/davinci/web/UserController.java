@@ -1,6 +1,8 @@
 package com.davinci.web;
 
 import com.davinci.domain.User;
+import com.davinci.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,41 +20,8 @@ public class UserController {
     // static or non-static
     private final List<User> users = new ArrayList<>();
 
-    /**
-     * mustache 연습용
-     */
-    @GetMapping("/mustacheTest")
-    public String mustacheTest(Model model) {
-        model.addAttribute("name", "Chris");
-        model.addAttribute("value", 10000);
-        model.addAttribute("taxed_value", 10000 - (10000 * 0.4));
-        model.addAttribute("in_ca", true);
-
-        List<Integer> list = Arrays.asList(1, 2, 3, 4, 5);
-
-        model.addAttribute("nothin", list);
-
-        HashMap<String, String> hashMap1 = new HashMap<>();
-        hashMap1.put("name", "one");
-        HashMap<String, String> hashMap2 = new HashMap<>();
-        hashMap2.put("name", "two");
-        HashMap<String, String> hashMap3 = new HashMap<>();
-        hashMap3.put("name", "three");
-
-        List<Map<String, String>> mapList = Arrays.asList(hashMap1, hashMap2, hashMap3);
-        model.addAttribute("repo", mapList);
-
-        HashMap<String, String> hashMap4 = new HashMap<>();
-        hashMap4.put("name", "Willy");
-        HashMap<String, String> hashMap5 = new HashMap<>();
-        hashMap5.put("wrapped", "((text: String) => <b>{text}</b>)");
-
-        List<Map<String, String>> mapList1 = Arrays.asList(hashMap4, hashMap5);
-
-        model.addAttribute("wrapped", mapList1);
-
-        return "test";
-    }
+    @Autowired
+    private UserRepository userRepository;
 
     /**
      * test 용
@@ -67,10 +36,18 @@ public class UserController {
     }
 
     /**
-     * 회원가입 폼
+     * 회원가입 폼(구 버전)
+     */
+    @GetMapping("/tempForm")
+    public String formMember() {
+        return "tempForm";
+    }
+
+    /**
+     * 회원가입 폼(신 버전)
      */
     @GetMapping("/form")
-    public String formMember() {
+    public String userFormMember() {
         return "form";
     }
 
@@ -83,17 +60,29 @@ public class UserController {
         // TODO
         System.out.println("user = " + user);
 
-        // 1. UserList 에 생성하기
-        users.add(user);
+        userRepository.save(user);
 
         // 3. Redirect
         return "redirect:/list";
     }
 
+    /**
+     * 회원목록(신)
+     */
     @GetMapping("/list")
     public String members(Model model) {
-        model.addAttribute("users", users);
+        model.addAttribute("users", userRepository.findAll());
 
         return "list";
     }
+
+//    /**
+//     * 회원목록(구)
+//     */
+//    @GetMapping("/tempList")
+//    public String members(Model model) {
+//        model.addAttribute("users", userRepository.findAll());
+//
+//        return "tempList";
+//    }
 }
