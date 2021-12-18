@@ -1,15 +1,34 @@
-package com.davinci.entity;
+package com.davinci.domain;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
+@Entity
 public class User {
 
+    @Id
+    @GeneratedValue
+    private Long id;
+
+    @Column(nullable = false, length = 20)
     private String userId;
+
+    @Column(nullable = false, length = 20)
     private String password;
+
+    @Column(nullable = false, length = 20)
     private String userName;
 
-    public User(String userId, String password, String userName) {
+    @Column(nullable = false, length = 20)
+    private String email;
+
+    public User(String userId, String password, String userName, String email) {
         this.userId = userId;
         this.password = password;
         this.userName = userName;
+        this.email = email;
     }
 
     public String getUserId() {
@@ -24,6 +43,8 @@ public class User {
         return userName;
     }
 
+    public String getEmail() { return email; }
+
     public void setUserId(String userId) {
         this.userId = userId;
     }
@@ -35,6 +56,8 @@ public class User {
     public void setUserName(String userName) {
         this.userName = userName;
     }
+
+    public void setEmail(String email) { this.email = email; }
 
     @Override
     public String toString() {

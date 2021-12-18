@@ -1,6 +1,6 @@
 package com.davinci.web;
 
-import com.davinci.entity.User;
+import com.davinci.domain.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
