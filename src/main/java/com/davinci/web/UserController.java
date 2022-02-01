@@ -5,11 +5,9 @@ import com.davinci.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.PostConstruct;
 import java.util.*;
 
 /**
@@ -18,6 +16,12 @@ import java.util.*;
 @Controller
 @RequestMapping("/user")
 public class UserController {
+
+    @PostConstruct
+    public void initData() {
+        userRepository.save(new User("hojong1351", "12341234", "정호종", "hojong1351@gmail.com"));
+        userRepository.save(new User("davincij1111", "11112222", "다빈치", "hojong1351@nvaer.com"));
+    }
 
     // static or non-static
     private final List<User> users = new ArrayList<>();
@@ -78,13 +82,38 @@ public class UserController {
         return "/user/list";
     }
 
-//    /**
-//     * 회원목록(구)
-//     */
-//    @GetMapping("/tempList")
-//    public String members(Model model) {
-//        model.addAttribute("users", userRepository.findAll());
-//
-//        return "tempList";
-//    }
+    /**
+     * 회원수정 폼
+     */
+    @GetMapping("/{id}/updateForm")
+    public String updateForm(@PathVariable Long id, Model model) {
+        System.out.println("id: " + id);
+
+        Optional<User> user = userRepository.findById(id);
+
+        System.out.println("user.get() = " + user.get());
+
+        model.addAttribute("user", user.get());
+
+        return "/user/updateForm";
+    }
+
+    /**
+     * 회원수정
+     */
+    @PostMapping("/{id}/update")
+    public String update(@PathVariable Long id, User updateUser) {
+        System.out.println("id = " + id);
+        System.out.println("updateUser = " + updateUser);
+
+        User user = userRepository.findById(id).get();
+        user.update(updateUser);
+
+        System.out.println("after transform : user = " + user);
+
+        userRepository.save(user);
+
+        return "redirect:/user/list";
+    }
+
 }

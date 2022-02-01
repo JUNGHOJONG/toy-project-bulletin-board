@@ -71,4 +71,10 @@ public class User {
                 ", email='" + email + '\'' +
                 '}';
     }
+
+    public void update(User updateUser) {
+        this.userId = updateUser.getUserId();
+        this.userName = updateUser.getUserName();
+        this.email = updateUser.getEmail();
+    }
 }
