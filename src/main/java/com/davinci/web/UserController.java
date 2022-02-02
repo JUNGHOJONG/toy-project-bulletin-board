@@ -1,6 +1,7 @@
 package com.davinci.web;
 
 import com.davinci.domain.User;
+import com.davinci.exception.Constants;
 import com.davinci.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,16 +80,14 @@ public class UserController {
      * 회원수정 폼
      */
     @GetMapping("/{id}/updateForm")
-    public String updateForm(@PathVariable Long id, Model model, HttpSession httpSession) throws IllegalAccessException {
+    public String updateForm(@PathVariable Long id, Model model, HttpSession httpSession) {
         // 방어 코드 짜기(세션에 있는 정보와 변경하고자 하는 대상이 다를 경우 예외 처리
-        User sessionUser = (User) httpSession.getAttribute("sessionUser");
-
-        if (sessionUser == null) {
+        if (!HttpSessionUtils.isLoginUser(httpSession)) {
             return "redirect:/user/loginForm";
         }
 
-        if (!id.equals(sessionUser.getId())) {
-            throw new IllegalAccessException("You can't fix another person's information");
+        if (!HttpSessionUtils.getUserFormSession(httpSession).matchId(id)) {
+            throw new IllegalStateException(Constants.ONLY_OWN_INFORMATION_EDIT);
         }
 
         log.debug("updateForm : id = {}", id);
@@ -106,16 +105,14 @@ public class UserController {
      * 회원수정
      */
     @PutMapping("/{id}/update")
-    public String update(@PathVariable Long id, User updateUser, HttpSession httpSession) throws IllegalAccessException {
-        // 방어 코드 짜기(세션에 있는 정보와 변경하고자 하는 대상이 다를 경우 예외 처리
-        User sessionUser = (User) httpSession.getAttribute("sessionUser");
+    public String update(@PathVariable Long id, User updateUser, HttpSession httpSession) {
 
-        if (sessionUser == null) {
+        if (!HttpSessionUtils.isLoginUser(httpSession)) {
             return "redirect:/user/loginForm";
         }
 
-        if (!id.equals(sessionUser.getId())) {
-            throw new IllegalAccessException("You can't fix another person's information");
+        if (!HttpSessionUtils.getUserFormSession(httpSession).matchId(id)) {
+            throw new IllegalStateException(Constants.ONLY_OWN_INFORMATION_EDIT);
         }
 
         log.debug("update : id = {}", id);
@@ -127,8 +124,8 @@ public class UserController {
 
         userRepository.save(user);
 
-        if (!ObjectUtils.isEmpty(httpSession.getAttribute("sessionUser"))) { // 로그인 상태에서 자신의 정보를 수정했을 때 세션에도 바로 반영되게 수정
-            httpSession.setAttribute("sessionUser", user);
+        if (!ObjectUtils.isEmpty(httpSession.getAttribute(HttpSessionUtils.SESSION_USER_ID))) { // 로그인 상태에서 자신의 정보를 수정했을 때 세션에도 바로 반영되게 수정
+            httpSession.setAttribute(HttpSessionUtils.SESSION_USER_ID, user);
         }
 
         return "redirect:/user/list";
@@ -138,10 +135,22 @@ public class UserController {
      * 회원삭제
      */
     @DeleteMapping("/{id}/delete")
-    public String delete(@PathVariable Long id) {
+    public String delete(@PathVariable Long id, HttpSession httpSession) {
+
+        if (!HttpSessionUtils.isLoginUser(httpSession)) {
+            return "redirect:/user/loginForm";
+        }
+
+        if (!HttpSessionUtils.getUserFormSession(httpSession).matchId(id)) {
+            throw new IllegalStateException(Constants.ONLY_OWN_INFORMATION_DELETE);
+        }
+
         userRepository.deleteById(id);
 
-        return "redirect:/user/list";
+        // 만약에 현재 로그인 중인 정보를 삭제할 경우 해당 세션 정보를 삭제하고 다시 로그인 화면으로 redirect 한다.
+        httpSession.removeAttribute(HttpSessionUtils.SESSION_USER_ID);
+
+        return "redirect:/user/loginForm";
     }
 
     /**
@@ -166,13 +175,13 @@ public class UserController {
             return "redirect:/user/loginForm";
         }
 
-        if (!password.equals(user.getPassword())) {
+        if (!user.matchPassword(password)) {
             log.debug("login failure");
             return "redirect:/user/loginForm";
         }
 
         log.debug("login success");
-        httpSession.setAttribute("sessionUser", user);
+        httpSession.setAttribute(HttpSessionUtils.SESSION_USER_ID, user);
 
         return "redirect:/";
     }
@@ -183,7 +192,7 @@ public class UserController {
     @GetMapping("/logout")
     public String logout(HttpSession httpSession) {
         log.debug("logout success");
-        httpSession.removeAttribute("sessionUser");
+        httpSession.removeAttribute(HttpSessionUtils.SESSION_USER_ID);
 
         return "redirect:/";
     }
