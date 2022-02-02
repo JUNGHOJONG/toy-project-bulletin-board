@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.PostConstruct;
@@ -78,7 +79,18 @@ public class UserController {
      * 회원수정 폼
      */
     @GetMapping("/{id}/updateForm")
-    public String updateForm(@PathVariable Long id, Model model) {
+    public String updateForm(@PathVariable Long id, Model model, HttpSession httpSession) throws IllegalAccessException {
+        // 방어 코드 짜기(세션에 있는 정보와 변경하고자 하는 대상이 다를 경우 예외 처리
+        User sessionUser = (User) httpSession.getAttribute("sessionUser");
+
+        if (sessionUser == null) {
+            return "redirect:/user/loginForm";
+        }
+
+        if (!id.equals(sessionUser.getId())) {
+            throw new IllegalAccessException("You can't fix another person's information");
+        }
+
         log.debug("updateForm : id = {}", id);
 
         Optional<User> user = userRepository.findById(id);
@@ -94,7 +106,18 @@ public class UserController {
      * 회원수정
      */
     @PutMapping("/{id}/update")
-    public String update(@PathVariable Long id, User updateUser) {
+    public String update(@PathVariable Long id, User updateUser, HttpSession httpSession) throws IllegalAccessException {
+        // 방어 코드 짜기(세션에 있는 정보와 변경하고자 하는 대상이 다를 경우 예외 처리
+        User sessionUser = (User) httpSession.getAttribute("sessionUser");
+
+        if (sessionUser == null) {
+            return "redirect:/user/loginForm";
+        }
+
+        if (!id.equals(sessionUser.getId())) {
+            throw new IllegalAccessException("You can't fix another person's information");
+        }
+
         log.debug("update : id = {}", id);
         log.debug("updateUser : {}", updateUser);
         User user = userRepository.findById(id).get();
@@ -103,6 +126,10 @@ public class UserController {
         log.debug("updatedUser : {}", user);
 
         userRepository.save(user);
+
+        if (!ObjectUtils.isEmpty(httpSession.getAttribute("sessionUser"))) { // 로그인 상태에서 자신의 정보를 수정했을 때 세션에도 바로 반영되게 수정
+            httpSession.setAttribute("sessionUser", user);
+        }
 
         return "redirect:/user/list";
     }
@@ -145,7 +172,7 @@ public class UserController {
         }
 
         log.debug("login success");
-        httpSession.setAttribute("user", user);
+        httpSession.setAttribute("sessionUser", user);
 
         return "redirect:/";
     }
@@ -156,7 +183,7 @@ public class UserController {
     @GetMapping("/logout")
     public String logout(HttpSession httpSession) {
         log.debug("logout success");
-        httpSession.removeAttribute("user");
+        httpSession.removeAttribute("sessionUser");
 
         return "redirect:/";
     }

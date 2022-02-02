@@ -18,6 +18,9 @@
                 </div>
             </form>
             <ul class="nav navbar-nav navbar-right">
+                {{#sessionUser}}
+                    <li><div class="navbar-brand">{{userName}} 님</div></li>
+                {{/sessionUser}}
                 <li>
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-bell"></i></a>
                     <ul class="dropdown-menu">
@@ -50,14 +53,14 @@
         <div class="collapse navbar-collapse" id="navbar-collapse2">
             <ul class="nav navbar-nav navbar-right">
                 <li class="active"><a href="index.html">Posts</a></li>
-                {{^user}}
+                {{^sessionUser}}
                     <li><a href="/user/loginForm" role="button">로그인</a></li>
                     <li><a href="/user/form" role="button">회원가입</a></li>
-                {{/user}}
-                {{#user}}
+                {{/sessionUser}}
+                {{#sessionUser}}
                     <li><a href="/user/logout" role="button">로그아웃</a></li>
-                    <li><a href="#" role="button">개인정보수정</a></li>
-                {{/user}}
+                    <li><a href="/user/{{id}}/updateForm" role="button">개인정보수정</a></li>
+                {{/sessionUser}}
             </ul>
         </div>
     </div>
