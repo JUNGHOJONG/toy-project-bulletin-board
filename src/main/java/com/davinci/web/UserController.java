@@ -48,7 +48,7 @@ public class UserController {
      */
     @GetMapping("/form")
     public String userFormMember() {
-        return "/user/form";
+        return "user/form";
     }
 
     /**
@@ -73,7 +73,7 @@ public class UserController {
     public String members(Model model) {
         model.addAttribute("users", userRepository.findAll());
 
-        return "/user/list";
+        return "user/list";
     }
 
     /**
@@ -98,7 +98,7 @@ public class UserController {
 
         model.addAttribute("user", user.get());
 
-        return "/user/updateForm";
+        return "user/updateForm";
     }
 
     /**
@@ -158,7 +158,7 @@ public class UserController {
      */
     @GetMapping("/loginForm")
     public String loginForm() {
-        return "/user/loginForm";
+        return "user/loginForm";
     }
 
     /**
