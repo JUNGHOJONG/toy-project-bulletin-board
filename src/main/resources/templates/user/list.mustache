@@ -24,11 +24,11 @@
                       <td>{{userName}}</td>
                       <td>{{email}}</td>
                       <td>
-                          <form method="post" action="/user/{{id}}/delete">
+                          <form method="post" action="/users/{{id}}/delete">
                               <input type="hidden" name="_method" value="delete">
                               <button type="submit" class="btn btn-danger clearfix pull-right">삭제</button>
                           </form>
-                          <a href="/user/{{id}}/updateForm" class="btn btn-success clearfix pull-right" role="button">수정</a>
+                          <a href="/users/{{id}}/updateForm" class="btn btn-success clearfix pull-right" role="button">수정</a>
                       </td>
                   </tr>
               {{/users}}

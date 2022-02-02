@@ -18,7 +18,7 @@ import java.util.*;
  * 회원가입, 회원목록 조회
  */
 @Controller
-@RequestMapping("/user")
+@RequestMapping("/users")
 @Slf4j
 public class UserController {
 

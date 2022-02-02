@@ -29,7 +29,7 @@ public class QuestionController {
             return "redirect:/user/loginForm";
         }
 
-        return "/qna/form";
+        return "qna/form";
     }
 
     /**
