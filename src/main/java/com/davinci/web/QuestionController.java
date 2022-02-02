@@ -26,7 +26,7 @@ public class QuestionController {
 
         // 로그인한 사용자만 사용할 수 있도록 구현
         if (!HttpSessionUtils.isLoginUser(httpSession)) {
-            return "redirect:/user/loginForm";
+            return "redirect:/users/loginForm";
         }
 
         return "qna/form";
@@ -39,7 +39,7 @@ public class QuestionController {
     public String createQuestion(String title, String contents, HttpSession httpSession) {
 
         if (!HttpSessionUtils.isLoginUser(httpSession)) {
-            return "redirect:/user/loginForm";
+            return "redirect:/users/loginForm";
         }
 
         User user = HttpSessionUtils.getUserFormSession(httpSession);

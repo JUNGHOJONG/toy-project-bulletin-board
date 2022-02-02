@@ -63,7 +63,7 @@ public class UserController {
         userRepository.save(user);
 
         // 3. Redirect
-        return "redirect:/user/list";
+        return "redirect:/users/list";
     }
 
     /**
@@ -83,7 +83,7 @@ public class UserController {
     public String updateForm(@PathVariable Long id, Model model, HttpSession httpSession) {
         // 방어 코드 짜기(세션에 있는 정보와 변경하고자 하는 대상이 다를 경우 예외 처리
         if (!HttpSessionUtils.isLoginUser(httpSession)) {
-            return "redirect:/user/loginForm";
+            return "redirect:/users/loginForm";
         }
 
         if (!HttpSessionUtils.getUserFormSession(httpSession).matchId(id)) {
@@ -108,7 +108,7 @@ public class UserController {
     public String update(@PathVariable Long id, User updateUser, HttpSession httpSession) {
 
         if (!HttpSessionUtils.isLoginUser(httpSession)) {
-            return "redirect:/user/loginForm";
+            return "redirect:/users/loginForm";
         }
 
         if (!HttpSessionUtils.getUserFormSession(httpSession).matchId(id)) {
@@ -128,7 +128,7 @@ public class UserController {
             httpSession.setAttribute(HttpSessionUtils.SESSION_USER_ID, user);
         }
 
-        return "redirect:/user/list";
+        return "redirect:/users/list";
     }
 
     /**
@@ -138,7 +138,7 @@ public class UserController {
     public String delete(@PathVariable Long id, HttpSession httpSession) {
 
         if (!HttpSessionUtils.isLoginUser(httpSession)) {
-            return "redirect:/user/loginForm";
+            return "redirect:/users/loginForm";
         }
 
         if (!HttpSessionUtils.getUserFormSession(httpSession).matchId(id)) {
@@ -150,7 +150,7 @@ public class UserController {
         // 만약에 현재 로그인 중인 정보를 삭제할 경우 해당 세션 정보를 삭제하고 다시 로그인 화면으로 redirect 한다.
         httpSession.removeAttribute(HttpSessionUtils.SESSION_USER_ID);
 
-        return "redirect:/user/loginForm";
+        return "redirect:/users/loginForm";
     }
 
     /**
@@ -172,12 +172,12 @@ public class UserController {
 
         if (user == null) {
             log.debug("login failure");
-            return "redirect:/user/loginForm";
+            return "redirect:/users/loginForm";
         }
 
         if (!user.matchPassword(password)) {
             log.debug("login failure");
-            return "redirect:/user/loginForm";
+            return "redirect:/users/loginForm";
         }
 
         log.debug("login success");

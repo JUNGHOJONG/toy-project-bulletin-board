@@ -28,7 +28,7 @@
                         <li><a href="https://facebook.com" target="_blank">Facebook</a></li>
                     </ul>
                 </li>
-                <li><a href="/user/list"><i class="glyphicon glyphicon-user"></i></a></li>
+                <li><a href="/users/list"><i class="glyphicon glyphicon-user"></i></a></li>
             </ul>
         </div>
     </div>
@@ -54,12 +54,12 @@
             <ul class="nav navbar-nav navbar-right">
                 <li class="active"><a href="index.html">Posts</a></li>
                 {{^sessionUser}}
-                    <li><a href="/user/loginForm" role="button">로그인</a></li>
-                    <li><a href="/user/form" role="button">회원가입</a></li>
+                    <li><a href="/users/loginForm" role="button">로그인</a></li>
+                    <li><a href="/users/form" role="button">회원가입</a></li>
                 {{/sessionUser}}
                 {{#sessionUser}}
-                    <li><a href="/user/logout" role="button">로그아웃</a></li>
-                    <li><a href="/user/{{id}}/updateForm" role="button">개인정보수정</a></li>
+                    <li><a href="/users/logout" role="button">로그아웃</a></li>
+                    <li><a href="/users/{{id}}/updateForm" role="button">개인정보수정</a></li>
                 {{/sessionUser}}
             </ul>
         </div>
