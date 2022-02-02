@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpSession;
 import java.util.*;
 
 /**
@@ -25,9 +26,6 @@ public class UserController {
         userRepository.save(new User("davincij1111", "11112222", "다빈치", "hojong1351@nvaer.com"));
     }
 
-    // static or non-static
-    private final List<User> users = new ArrayList<>();
-
     @Autowired
     private UserRepository userRepository;
 
@@ -41,14 +39,6 @@ public class UserController {
         System.out.println("age = " + age);
 
         return "ok";
-    }
-
-    /**
-     * 회원가입 폼(구 버전)
-     */
-    @GetMapping("/tempForm")
-    public String formMember() {
-        return "tempForm";
     }
 
     /**
@@ -125,6 +115,39 @@ public class UserController {
         userRepository.deleteById(id);
 
         return "redirect:/user/list";
+    }
+
+    /**
+     * 로그인 폼
+     */
+    @GetMapping("/loginForm")
+    public String loginForm() {
+        return "/user/loginForm";
+    }
+
+    /**
+     * 로그인
+     */
+    @PostMapping("/login")
+    public String login(String userId, String password, HttpSession httpSession) {
+        log.debug("userId = {}, password = {}", userId, password);
+
+        User user = userRepository.findByUserId(userId);
+
+        if (user == null) {
+            log.debug("login failure");
+            return "redirect:/user/loginForm";
+        }
+
+        if (!password.equals(user.getPassword())) {
+            log.debug("login failure");
+            return "redirect:/user/loginForm";
+        }
+
+        log.debug("login success");
+        httpSession.setAttribute("user", user);
+
+        return "redirect:/";
     }
 
 }
