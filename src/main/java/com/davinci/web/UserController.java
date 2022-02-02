@@ -117,4 +117,14 @@ public class UserController {
         return "redirect:/user/list";
     }
 
+    /**
+     * 회원삭제
+     */
+    @DeleteMapping("/{id}/delete")
+    public String delete(@PathVariable Long id) {
+        userRepository.deleteById(id);
+
+        return "redirect:/user/list";
+    }
+
 }
