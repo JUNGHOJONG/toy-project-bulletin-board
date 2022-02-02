@@ -150,4 +150,15 @@ public class UserController {
         return "redirect:/";
     }
 
+    /**
+     * 로그아웃
+     */
+    @GetMapping("/logout")
+    public String logout(HttpSession httpSession) {
+        log.debug("logout success");
+        httpSession.removeAttribute("user");
+
+        return "redirect:/";
+    }
+
 }
