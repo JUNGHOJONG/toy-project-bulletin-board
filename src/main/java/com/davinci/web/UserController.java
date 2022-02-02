@@ -2,6 +2,7 @@ package com.davinci.web;
 
 import com.davinci.domain.User;
 import com.davinci.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,6 +16,7 @@ import java.util.*;
  */
 @Controller
 @RequestMapping("/user")
+@Slf4j
 public class UserController {
 
     @PostConstruct
@@ -64,7 +66,7 @@ public class UserController {
     @PostMapping("/create")
     public String createMember(User user) {
         // TODO
-        System.out.println("user = " + user);
+        log.debug("createMember : user = {}", user);
 
         userRepository.save(user);
 
@@ -87,11 +89,11 @@ public class UserController {
      */
     @GetMapping("/{id}/updateForm")
     public String updateForm(@PathVariable Long id, Model model) {
-        System.out.println("id: " + id);
+        log.debug("updateForm : id = {}", id);
 
         Optional<User> user = userRepository.findById(id);
 
-        System.out.println("user.get() = " + user.get());
+        log.debug("updateForm : user.get() = {}", user.get());
 
         model.addAttribute("user", user.get());
 
@@ -101,15 +103,14 @@ public class UserController {
     /**
      * 회원수정
      */
-    @PostMapping("/{id}/update")
+    @PutMapping("/{id}/update")
     public String update(@PathVariable Long id, User updateUser) {
-        System.out.println("id = " + id);
-        System.out.println("updateUser = " + updateUser);
-
+        log.debug("update : id = {}", id);
+        log.debug("updateUser : {}", updateUser);
         User user = userRepository.findById(id).get();
         user.update(updateUser);
 
-        System.out.println("after transform : user = " + user);
+        log.debug("updatedUser : {}", user);
 
         userRepository.save(user);
 
